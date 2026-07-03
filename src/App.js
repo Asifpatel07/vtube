@@ -3,34 +3,26 @@ import './App.css';
 import Body from './components/Body';
 import Header from './components/Header';
 import store from './utils/Store';
-import { createBrowserRouter, RouterProvider } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import MainContainer from './components/MainContainer';
 import WatchPage from './components/WatchPage';
-
-const Router = createBrowserRouter([
-  {
-    path: "/",
-    element: <Body />,
-    children: [
-      {
-        path: "/",
-        element: <MainContainer />,
-      },
-      {
-        path: "watch",
-        element: <WatchPage />,
-      }
-    ],
-  },
-]);
+import SearchResultsPage from './components/SearchResultsPage';
 
 function App() {
   return (
     <Provider store={store}>
-      <div className="App">
-        <Header />
-        <RouterProvider router={Router} />
-      </div>
+      <BrowserRouter>
+        <div className="App">
+          <Header />
+          <Routes>
+            <Route path="/" element={<Body />}>
+              <Route index element={<MainContainer />} />
+              <Route path="watch" element={<WatchPage />} />
+              <Route path="results" element={<SearchResultsPage />} />
+            </Route>
+          </Routes>
+        </div>
+      </BrowserRouter>
     </Provider>
   );
 }

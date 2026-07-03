@@ -1,5 +1,6 @@
 import { React, useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 import { toggleMenu } from '../utils/AppSlice';
 import { YOUTUBE_SEARCH_API_URL } from '../utils/constants';
 import { cacheResults } from '../utils/SearchSlice';
@@ -10,6 +11,7 @@ const Header = () => {
     const [showSuggestions, setShowSuggestions] = useState(false);
     const cachedSuggestions = useSelector((store) => store.search);
     const dispatch = useDispatch();
+    const navigate = useNavigate();
 
     useEffect(() => {
        const timer = setTimeout(() => {
@@ -48,6 +50,12 @@ const Header = () => {
         dispatch(toggleMenu());
     };
 
+    const handleSuggestionClick = (suggestion) => {
+        setSearchQuery(suggestion);
+        setShowSuggestions(false);
+        navigate(`/results?search_query=${encodeURIComponent(suggestion)}`);
+    };
+
     return (
         <div className="fixed bg-white w-full grid grid-flow-col p-5 shadow-lg">
             <div className="flex p-2 col-span-1">
@@ -69,15 +77,17 @@ const Header = () => {
                 {showSuggestions && (
                     <div className="search-result fixed py-2 px-5 w-[32rem] bg-white shadow-lg rounded-lg border border-gray-100">
                     <ul>
-                        {suggestions.map((s) => (
-                            <li key={s} className="hover:bg-gray-200 py-1 px-2 shadow-sm" onClick={() => {
-                                setSearchQuery(s);
-                                setShowSuggestions(false);
-                            }}>
+                        {suggestions.map((s, index) => (
+                            <li
+                                key={index}
+                                className="hover:bg-gray-200 py-1 px-2 shadow-sm cursor-pointer"
+                                onMouseDown={() => handleSuggestionClick(s)}
+                            >
                                 🔍 {s}
                             </li>
                         ))}
                     </ul>
+
                     </div>
                 )}
             </div>
